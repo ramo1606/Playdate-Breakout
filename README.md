@@ -1,6 +1,6 @@
 # Breakout Game for Playdate
 
-This is a Breakout-style game developed for the Playdate console using C89.
+This is a modern take on the classic Breakout game, developed for the Playdate handheld gaming system. The game features enhanced gameplay mechanics, visual effects, and power-ups, all implemented in C using the Playdate SDK.
 
 ## Project Structure
 
@@ -10,23 +10,27 @@ breakout_playdate/
 ├── CMakeLists.txt
 ├── README.md
 ├── .gitignore
+├── docs/
 └── Source/
+    ├── include/
+    │   ├── game.h
+    │   ├── paddle.h
+    │   ├── ball.h
+    │   ├── brick.h
+    │   └── utils.h
     ├── src/
     │   ├── main.c
-    │   ├── game.h
     │   ├── game.c
-    │   ├── paddle.h
     │   ├── paddle.c
-    │   ├── ball.h
     │   ├── ball.c
-    │   ├── brick.h
     │   ├── brick.c
-    │   ├── utils.h
     │   └── utils.c
+    ├── lib/
     ├── assets/
     │   ├── images/
     │   ├── sounds/
-    │   └── music/
+    │   ├── music/
+    │   └── levels/
     └── tests/
         ├── CMakeLists.txt
         ├── minunit.h
@@ -35,72 +39,129 @@ breakout_playdate/
         └── test_brick.c
 ```
 
-## Setup Instructions
+## How to Build
 
-1. **Install Playdate SDK**
-   - Download and install the Playdate SDK from the official Playdate developer website.
-   - Set the `PLAYDATE_SDK_PATH` environment variable to the SDK installation directory.
+To build this project, you'll need the Playdate SDK and CMake installed on your system.
 
-2. **Install Visual Studio 2022**
-   - Download and install Visual Studio 2022 with C++ development tools.
+1. Set up the Playdate SDK:
+   - Download and install the [Playdate SDK](https://play.date/dev/).
+   - Set the `PLAYDATE_SDK_PATH` environment variable to point to your SDK installation.
 
-3. **Install CMake**
-   - Download and install CMake (version 3.14 or higher) from the official website.
-   - Ensure CMake is added to your system PATH.
+2. Clone this repository:
+   ```
+   git clone https://github.com/ramo1606/Playdate-Breakout.git
+   cd breakout_playdate
+   ```
 
-4. **Clone the Repository**
-   - Clone this repository to your local machine:
+3. Create a build directory and run CMake:
+   ```
+   mkdir build
+   cd build
+   cmake ..
+   ```
+
+4. Build the project:
+   - For Visual Studio: Open the generated `.sln` file and build the project.
+   - For Make: Run `make` in the build directory.
+
+5. To build for the Playdate device:
+   - Open a Visual Studio Developer Command Prompt from the Start Menu or from within Visual Studio
+   ```
+   cmake .. -G "NMake Makefiles" --toolchain=C:/Users/Ramo/Documents/PlaydateSDK/C_API/buildsupport/arm.cmake -DCMAKE_BUILD_TYPE=Release
+   nmake
+   ```
+
+6. The output will be a `.pdx` file, which can be run on the Playdate simulator or transferred to a Playdate device.
+
+## Running Tests
+
+This project includes a test suite using the minunit testing framework. To build and run the tests:
+
+1. From the main build directory:
+   ```
+   cmake ..
+   make
+   make test
+   ```
+
+2. Or, to build and run tests directly:
+   ```
+   cd tests
+   cmake .
+   make
+   ./run_tests
+   ```
+
+The test setup is configured in two CMakeLists.txt files:
+
+- The main CMakeLists.txt file in the project root includes the tests subdirectory.
+- The CMakeLists.txt file in the tests directory sets up the test executable and links it with the main project.
+
+If you add new test files or need to include additional resources for testing, you'll need to update the tests/CMakeLists.txt file accordingly.
+
+## Coding Style
+
+This project follows a specific coding style to maintain consistency and readability:
+
+1. **C Standard**: We use C89 (ANSI C) to ensure maximum compatibility with the Playdate SDK.
+
+2. **Naming Conventions**:
+   - Use descriptive names for functions, variables, and types.
+   - Functions use camelCase: `updateGameState()`, `drawPaddle()`.
+   - Variables use camelCase: `playerScore`, `ballSpeed`.
+   - Constants and macros use UPPER_SNAKE_CASE: `MAX_PLAYERS`, `INITIAL_BALL_SPEED`.
+   - Typedef structs use PascalCase: `typedef struct { ... } GameState;`
+
+3. **Braces**: We use Allman style braces:
+   ```c
+   if (condition)
+   {
+       // code
+   }
+   else
+   {
+       // code
+   }
+   ```
+
+4. **Indentation**: Use 4 spaces for indentation, not tabs.
+
+5. **Comments**: 
+   - Use C-style comments for multi-line explanations: `/* ... */`
+   - Use C++-style comments for single-line comments: `// ...`
+   - Each function should have a brief comment explaining its purpose.
+
+6. **File Structure**:
+   - Each `.c` file should have a corresponding `.h` file.
+   - Use include guards in header files:
+     ```c
+     #ifndef GAME_H
+     #define GAME_H
+     // content
+     #endif /* GAME_H */
      ```
-     git clone https://github.com/yourusername/breakout_playdate.git
-     cd breakout_playdate
-     ```
 
-5. **Configure CMake**
-   - Open a command prompt in the project root directory.
-   - Run the following commands:
-     ```
-     mkdir Build
-     cd Build
-     cmake -G "Visual Studio 17 2022" -A Win32 ..
-     ```
+7. **Modularity**: Keep functions small and focused on a single task. If a function grows too large, consider breaking it into smaller functions.
 
-6. **Build the Project**
-   - Open the generated `breakout_playdate.sln` file in Visual Studio 2022.
-   - Build the solution in both Debug and Release configurations.
+8. **Error Handling**: Use appropriate error handling mechanisms. Return error codes or use the Playdate SDK's error handling functions where appropriate.
 
-7. **Run in Simulator**
-   - In Visual Studio, set the `PlaydateSimulator` project as the startup project.
-   - Press F5 to build and run in the Playdate Simulator.
+9. **Documentation**: Use C-style documentation comments for functions in header files:
+   ```c
+   /**
+    * @brief Updates the game state for one frame
+    * @param game_state Pointer to the current game state
+    * @param delta_time Time elapsed since last frame in seconds
+    * @return 0 on success, non-zero error code on failure
+    */
+   int update_game_state(GameState* game_state, float delta_time);
+   ```
 
-8. **Compile for Playdate**
-   - In Visual Studio, build the `PlaydateDevice` project.
-   - The `.pdx` file for the device will be generated in the `Build/Debug` or `Build/Release` directory.
-
-## Development Guidelines
-
-- Use C89 (ANSI C) standard for all C code.
-- Follow the Playdate SDK coding style as outlined in the official documentation.
-- Use Allman brace style for all C code.
-- Implement modular code by separating concerns into different files (e.g., paddle.c, ball.c, brick.c).
-- Use sprites for game objects to optimize performance.
-- Place all image assets in the `Source/assets/images/` directory.
-- Place all sound effects in the `Source/assets/sounds/` directory.
-- Place all music files in the `Source/assets/music/` directory.
-
-## Testing
-
-- Use the `minunit.h` single header library for unit testing.
-- Write unit tests in the `Source/tests/` directory.
-- Run tests by building and running the `Tests` project in Visual Studio.
-
-## Version Control
-
-- Use Git for version control.
-- Commit frequently with meaningful commit messages.
-- Use feature branches for developing new features.
-- Create pull requests for code review before merging into the main branch.
+Please adhere to these guidelines when contributing to the project. Consistent style helps maintain code readability and makes collaboration easier.
 
 ## License
 
-[Add your chosen license here]
+[Include your chosen license here]
 
+## Contributing
+
+[If you want to accept contributions, include guidelines here]

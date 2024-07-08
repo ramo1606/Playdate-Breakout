@@ -1,6 +1,7 @@
 # Build directories
 Build/
 out/
+build/
 
 # Visual Studio files
 .vs/
@@ -41,6 +42,7 @@ Makefile
 *.out
 *.app
 *.pdx
+*.elf
 
 # macOS specific
 .DS_Store
