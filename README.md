@@ -5,7 +5,7 @@ This is a modern take on the classic Breakout game, developed for the Playdate h
 ## Project Structure
 
 ```
-breakout_playdate/
+Playdate-Breakout/
 │
 ├── CMakeLists.txt
 ├── README.md
@@ -41,37 +41,41 @@ breakout_playdate/
 
 ## How to Build
 
-To build this project, you'll need the Playdate SDK and CMake installed on your system.
+To build this project, you'll need the Playdate SDK and CMake installed on your system. [Playdate Building on Windows](https://sdk.play.date/2.5.0/Inside%20Playdate%20with%20C.html#_building_on_windows)
 
 1. Set up the Playdate SDK:
    - Download and install the [Playdate SDK](https://play.date/dev/).
-   - Set the `PLAYDATE_SDK_PATH` environment variable to point to your SDK installation.
+   - Set the `PLAYDATE_SDK_PATH` and `SDK` environment variables to point to your SDK installation.
 
-2. Clone this repository:
+2. Set up GNU ARM Embedded Toolchain
+   - Download and install the [GNU Arm Embedded Toolchain](https://developer.arm.com/downloads/-/gnu-rm/10-3-2021-10).
+   - Set the `PLAYDATE_ARM_GCC` environment variable to point to C:\Program Files (x86)\GNU Arm Embedded Toolchain\10 2021.10
+
+3. Clone this repository:
    ```
    git clone https://github.com/ramo1606/Playdate-Breakout.git
    cd breakout_playdate
    ```
 
-3. Create a build directory and run CMake:
+4. Create a build directory and run CMake:
    ```
    mkdir build
    cd build
    cmake ..
    ```
 
-4. Build the project:
+5. Build the project:
    - For Visual Studio: Open the generated `.sln` file and build the project.
    - For Make: Run `make` in the build directory.
 
-5. To build for the Playdate device:
+6. To build for the Playdate device:
    - Open a Visual Studio Developer Command Prompt from the Start Menu or from within Visual Studio
    ```
    cmake .. -G "NMake Makefiles" --toolchain=C:/Users/Ramo/Documents/PlaydateSDK/C_API/buildsupport/arm.cmake -DCMAKE_BUILD_TYPE=Release
    nmake
    ```
 
-6. The output will be a `.pdx` file, which can be run on the Playdate simulator or transferred to a Playdate device.
+7. The output will be a `.pdx` file, which can be run on the Playdate simulator or transferred to a Playdate device.
 
 ## Running Tests
 
